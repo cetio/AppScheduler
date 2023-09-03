@@ -51,6 +51,7 @@
             saveToolStripMenuItem = new ToolStripMenuItem();
             loadToolStripMenuItem = new ToolStripMenuItem();
             createManifestToolStripMenuItem = new ToolStripMenuItem();
+            checkBox1 = new CheckBox();
             menuStrip.SuspendLayout();
             SuspendLayout();
             // 
@@ -220,11 +221,22 @@
             createManifestToolStripMenuItem.Text = "Create Manifest";
             createManifestToolStripMenuItem.Click += createManifestToolStripMenuItem_Click;
             // 
+            // checkBox1
+            // 
+            checkBox1.AutoSize = true;
+            checkBox1.Location = new Point(239, 421);
+            checkBox1.Name = "checkBox1";
+            checkBox1.Size = new Size(203, 19);
+            checkBox1.TabIndex = 16;
+            checkBox1.Text = "Nuclear Mode (kill all children 😧)";
+            checkBox1.UseVisualStyleBackColor = true;
+            // 
             // AppScheduler
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(621, 452);
+            Controls.Add(checkBox1);
             Controls.Add(startTimeLabel);
             Controls.Add(parseFilesAssociation);
             Controls.Add(endTimeLabel);
@@ -271,5 +283,6 @@
         private ToolStripMenuItem saveToolStripMenuItem;
         private ToolStripMenuItem loadToolStripMenuItem;
         private ToolStripMenuItem createManifestToolStripMenuItem;
+        private CheckBox checkBox1;
     }
 }

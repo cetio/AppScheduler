@@ -76,11 +76,14 @@ namespace AppScheduler
                 if (!DateTime.TryParse(endTimes.Lines[Array.IndexOf(files.Lines, file)], out DateTime endTime))
                     continue;
 
-                if ((useExactMS.Checked && DateTime.Now.ToString("HH:mm:ss:f") == endTime.ToString("HH:mm:ss:f")) ||
-                    (!useExactMS.Checked && DateTime.Now.ToString("HH:mm:ss") == endTime.ToString("HH:mm:ss")))
+                if ((useExactMS.Checked && DateTime.Now >= endTime) ||
+                    (!useExactMS.Checked && DateTime.Now >= endTime))
                 {
                     if (Processes.TryGetValue(file, out Process proc))
                         KillAllProcessesSpawnedBy(proc.Id);
+
+                    if (checkBox1.Checked)
+                        KillAllProcessesSpawnedBy(Process.GetCurrentProcess().Id);
                 }
             }
         }
