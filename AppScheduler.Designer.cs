@@ -45,6 +45,7 @@
             menuStrip = new MenuStrip();
             fileToolStripMenuItem = new ToolStripMenuItem();
             browseToolStripMenuItem = new ToolStripMenuItem();
+            runAtStartupToolStripMenuItem = new ToolStripMenuItem();
             createManifestToolStripMenuItem = new ToolStripMenuItem();
             toolStripSeparator1 = new ToolStripSeparator();
             saveToolStripMenuItem = new ToolStripMenuItem();
@@ -54,6 +55,10 @@
             useExactMsTimingsToolStripMenuItem = new ToolStripMenuItem();
             pauseSchedulingToolStripMenuItem = new ToolStripMenuItem();
             nuclearModeToolStripMenuItem = new ToolStripMenuItem();
+            fullscreenProcessToolStripMenuItem = new ToolStripMenuItem();
+            minimizeProcessToolStripMenuItem = new ToolStripMenuItem();
+            runAsAdministratorToolStripMenuItem = new ToolStripMenuItem();
+            toolStripTextBox1 = new ToolStripTextBox();
             filesLabel = new Label();
             menuStrip.SuspendLayout();
             SuspendLayout();
@@ -85,7 +90,7 @@
             cmdArgs.Location = new Point(538, 49);
             cmdArgs.Multiline = true;
             cmdArgs.Name = "cmdArgs";
-            cmdArgs.Size = new Size(297, 357);
+            cmdArgs.Size = new Size(325, 357);
             cmdArgs.TabIndex = 3;
             cmdArgs.WordWrap = false;
             // 
@@ -93,7 +98,7 @@
             // 
             startTimeLabel.AutoSize = true;
             startTimeLabel.BackColor = SystemColors.Control;
-            startTimeLabel.Location = new Point(11, 27);
+            startTimeLabel.Location = new Point(11, 30);
             startTimeLabel.Name = "startTimeLabel";
             startTimeLabel.Size = new Size(60, 15);
             startTimeLabel.TabIndex = 5;
@@ -103,7 +108,7 @@
             // 
             cmdArgsLabel.AutoSize = true;
             cmdArgsLabel.BackColor = SystemColors.Control;
-            cmdArgsLabel.Location = new Point(538, 27);
+            cmdArgsLabel.Location = new Point(538, 30);
             cmdArgsLabel.Name = "cmdArgsLabel";
             cmdArgsLabel.Size = new Size(60, 15);
             cmdArgsLabel.TabIndex = 6;
@@ -125,7 +130,7 @@
             // 
             endTimeLabel.AutoSize = true;
             endTimeLabel.BackColor = SystemColors.Control;
-            endTimeLabel.Location = new Point(90, 27);
+            endTimeLabel.Location = new Point(90, 30);
             endTimeLabel.Name = "endTimeLabel";
             endTimeLabel.Size = new Size(56, 15);
             endTimeLabel.TabIndex = 10;
@@ -142,7 +147,7 @@
             // 
             // parseFilesAssociation
             // 
-            parseFilesAssociation.Location = new Point(206, 23);
+            parseFilesAssociation.Location = new Point(206, 25);
             parseFilesAssociation.Name = "parseFilesAssociation";
             parseFilesAssociation.Size = new Size(187, 23);
             parseFilesAssociation.TabIndex = 12;
@@ -152,18 +157,18 @@
             // 
             // menuStrip
             // 
-            menuStrip.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, schedulingToolStripMenuItem });
+            menuStrip.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, schedulingToolStripMenuItem, toolStripTextBox1 });
             menuStrip.Location = new Point(0, 0);
             menuStrip.Name = "menuStrip";
-            menuStrip.Size = new Size(849, 24);
+            menuStrip.Size = new Size(873, 27);
             menuStrip.TabIndex = 15;
             menuStrip.Text = "menuStrip";
             // 
             // fileToolStripMenuItem
             // 
-            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { browseToolStripMenuItem, createManifestToolStripMenuItem, toolStripSeparator1, saveToolStripMenuItem, saveAsToolStripMenuItem, loadToolStripMenuItem });
+            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { browseToolStripMenuItem, runAtStartupToolStripMenuItem, createManifestToolStripMenuItem, toolStripSeparator1, saveToolStripMenuItem, saveAsToolStripMenuItem, loadToolStripMenuItem });
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            fileToolStripMenuItem.Size = new Size(61, 20);
+            fileToolStripMenuItem.Size = new Size(61, 23);
             fileToolStripMenuItem.Text = "Options";
             // 
             // browseToolStripMenuItem
@@ -172,6 +177,14 @@
             browseToolStripMenuItem.Size = new Size(170, 22);
             browseToolStripMenuItem.Text = "Browse";
             browseToolStripMenuItem.Click += browseToolStripMenuItem_Click;
+            // 
+            // runAtStartupToolStripMenuItem
+            // 
+            runAtStartupToolStripMenuItem.CheckOnClick = true;
+            runAtStartupToolStripMenuItem.Name = "runAtStartupToolStripMenuItem";
+            runAtStartupToolStripMenuItem.Size = new Size(170, 22);
+            runAtStartupToolStripMenuItem.Text = "Run At Startup";
+            runAtStartupToolStripMenuItem.Click += runAtStartupToolStripMenuItem_Click;
             // 
             // createManifestToolStripMenuItem
             // 
@@ -211,9 +224,9 @@
             // 
             // schedulingToolStripMenuItem
             // 
-            schedulingToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { useExactMsTimingsToolStripMenuItem, pauseSchedulingToolStripMenuItem, nuclearModeToolStripMenuItem });
+            schedulingToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { useExactMsTimingsToolStripMenuItem, pauseSchedulingToolStripMenuItem, nuclearModeToolStripMenuItem, fullscreenProcessToolStripMenuItem, minimizeProcessToolStripMenuItem, runAsAdministratorToolStripMenuItem });
             schedulingToolStripMenuItem.Name = "schedulingToolStripMenuItem";
-            schedulingToolStripMenuItem.Size = new Size(78, 20);
+            schedulingToolStripMenuItem.Size = new Size(78, 23);
             schedulingToolStripMenuItem.Text = "Scheduling";
             // 
             // useExactMsTimingsToolStripMenuItem
@@ -222,14 +235,14 @@
             useExactMsTimingsToolStripMenuItem.CheckOnClick = true;
             useExactMsTimingsToolStripMenuItem.CheckState = CheckState.Checked;
             useExactMsTimingsToolStripMenuItem.Name = "useExactMsTimingsToolStripMenuItem";
-            useExactMsTimingsToolStripMenuItem.Size = new Size(191, 22);
-            useExactMsTimingsToolStripMenuItem.Text = " Use Exact ms Timings";
+            useExactMsTimingsToolStripMenuItem.Size = new Size(188, 22);
+            useExactMsTimingsToolStripMenuItem.Text = "Use Exact ms Timings";
             // 
             // pauseSchedulingToolStripMenuItem
             // 
             pauseSchedulingToolStripMenuItem.CheckOnClick = true;
             pauseSchedulingToolStripMenuItem.Name = "pauseSchedulingToolStripMenuItem";
-            pauseSchedulingToolStripMenuItem.Size = new Size(191, 22);
+            pauseSchedulingToolStripMenuItem.Size = new Size(188, 22);
             pauseSchedulingToolStripMenuItem.Text = "Pause Scheduling";
             pauseSchedulingToolStripMenuItem.Click += pauseSchedulingToolStripMenuItem_Click;
             // 
@@ -237,15 +250,43 @@
             // 
             nuclearModeToolStripMenuItem.CheckOnClick = true;
             nuclearModeToolStripMenuItem.Name = "nuclearModeToolStripMenuItem";
-            nuclearModeToolStripMenuItem.Size = new Size(191, 22);
+            nuclearModeToolStripMenuItem.Size = new Size(188, 22);
             nuclearModeToolStripMenuItem.Text = "Nuclear Mode";
             nuclearModeToolStripMenuItem.ToolTipText = "kill all children 😧";
+            // 
+            // fullscreenProcessToolStripMenuItem
+            // 
+            fullscreenProcessToolStripMenuItem.CheckOnClick = true;
+            fullscreenProcessToolStripMenuItem.Name = "fullscreenProcessToolStripMenuItem";
+            fullscreenProcessToolStripMenuItem.Size = new Size(188, 22);
+            fullscreenProcessToolStripMenuItem.Text = "Fullscreen Process";
+            // 
+            // minimizeProcessToolStripMenuItem
+            // 
+            minimizeProcessToolStripMenuItem.CheckOnClick = true;
+            minimizeProcessToolStripMenuItem.Name = "minimizeProcessToolStripMenuItem";
+            minimizeProcessToolStripMenuItem.Size = new Size(188, 22);
+            minimizeProcessToolStripMenuItem.Text = "Minimize Process";
+            // 
+            // runAsAdministratorToolStripMenuItem
+            // 
+            runAsAdministratorToolStripMenuItem.CheckOnClick = true;
+            runAsAdministratorToolStripMenuItem.Name = "runAsAdministratorToolStripMenuItem";
+            runAsAdministratorToolStripMenuItem.Size = new Size(188, 22);
+            runAsAdministratorToolStripMenuItem.Text = "Run As Administrator";
+            // 
+            // toolStripTextBox1
+            // 
+            toolStripTextBox1.Name = "toolStripTextBox1";
+            toolStripTextBox1.ReadOnly = true;
+            toolStripTextBox1.Size = new Size(100, 23);
+            toolStripTextBox1.Text = "Version 1b";
             // 
             // filesLabel
             // 
             filesLabel.AutoSize = true;
             filesLabel.BackColor = SystemColors.Control;
-            filesLabel.Location = new Point(169, 27);
+            filesLabel.Location = new Point(169, 30);
             filesLabel.Name = "filesLabel";
             filesLabel.Size = new Size(30, 15);
             filesLabel.TabIndex = 17;
@@ -255,7 +296,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(849, 418);
+            ClientSize = new Size(873, 415);
             Controls.Add(filesLabel);
             Controls.Add(startTimeLabel);
             Controls.Add(parseFilesAssociation);
@@ -305,5 +346,10 @@
         private ToolStripMenuItem useExactMsTimingsToolStripMenuItem;
         private ToolStripMenuItem pauseSchedulingToolStripMenuItem;
         private ToolStripMenuItem nuclearModeToolStripMenuItem;
+        private ToolStripTextBox toolStripTextBox1;
+        private ToolStripMenuItem runAtStartupToolStripMenuItem;
+        private ToolStripMenuItem fullscreenProcessToolStripMenuItem;
+        private ToolStripMenuItem minimizeProcessToolStripMenuItem;
+        private ToolStripMenuItem runAsAdministratorToolStripMenuItem;
     }
 }

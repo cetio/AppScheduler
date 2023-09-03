@@ -1,4 +1,5 @@
 using Microsoft.VisualBasic;
+using Microsoft.Win32;
 using System.Diagnostics;
 using System.Management;
 
@@ -67,6 +68,15 @@ namespace AppScheduler
                         ? cmdArgs.Lines[Array.IndexOf(files.Lines, file)]
                         : string.Empty;
 
+                    if (runAsAdministratorToolStripMenuItem.Checked)
+                        nproc.StartInfo.Verb = "runas";
+
+                    if (fullscreenProcessToolStripMenuItem.Checked)
+                        nproc.StartInfo.WindowStyle = ProcessWindowStyle.Maximized;
+
+                    if (minimizeProcessToolStripMenuItem.Checked)
+                        nproc.StartInfo.WindowStyle = ProcessWindowStyle.Minimized;
+
                     Processes[file + i] = nproc;
                     nproc.Start();
                     continue;
@@ -92,6 +102,9 @@ namespace AppScheduler
 
         private static void KillAllProcessesSpawnedBy(Process parentProcess, bool killSelf)
         {
+            if (killSelf)
+                parentProcess.Kill();
+
             // NOTE: Process Ids are reused!
             ManagementObjectSearcher searcher = new ManagementObjectSearcher(
                 "SELECT * " +
@@ -112,9 +125,6 @@ namespace AppScheduler
                     }
                 }
             }
-
-            if (killSelf)
-                parentProcess.Kill();
         }
 
         private void useExactMS_CheckedChanged(object sender, EventArgs e)
@@ -173,9 +183,9 @@ namespace AppScheduler
                     this.files.Lines = files;
                     cmdArgs.Lines = args;
                 }
-                catch
+                catch (Exception ex)
                 {
-
+                    MessageBox.Show(ex.Message);
                 }
             }
         }
@@ -301,6 +311,16 @@ namespace AppScheduler
             {
                 scheduler.Start();
             }
+        }
+
+        private void runAtStartupToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RegistryKey rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+
+            if (runAtStartupToolStripMenuItem.Checked)
+                rk.SetValue("AppScheduler", Application.ExecutablePath);
+            else
+                rk.DeleteValue("AppScheduler", false);
         }
     }
 }
