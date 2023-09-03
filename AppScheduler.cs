@@ -2,6 +2,8 @@ using Microsoft.VisualBasic;
 using Microsoft.Win32;
 using System.Diagnostics;
 using System.Management;
+using System.Runtime.InteropServices;
+using System.Text;
 
 namespace AppScheduler
 {
@@ -143,52 +145,33 @@ namespace AppScheduler
         {
             for (int i = 0; i < files.Lines.Length; i++)
             {
-                try
-                {
-                    string file = this.files.Lines[i];
-                    string ext = Path.GetExtension(file);
+                string file = this.files.Lines[i];
 
-                    if (string.IsNullOrEmpty(file))
-                        continue;
+                if (string.IsNullOrEmpty(file))
+                    continue;
 
-                    if (ext == ".exe" ||
-                        ext == ".cmd" ||
-                        ext == ".bat" ||
-                        ext == ".msi" ||
-                        ext == ".cmd" ||
-                        ext == ".com" ||
-                        ext == ".inx" ||
-                        ext == ".lnk" ||
-                        ext == ".msp" ||
-                        ext == ".mst")
-                        continue;
+                string[] files = this.files.Lines;
+                string[] args = cmdArgs.Lines;
 
-                    Process nproc = new Process
-                    {
-                        StartInfo = { UseShellExecute = true, FileName = file }
-                    };
+                files[i] = FindExecutable(file);
+                if (args[i].Length > 0)
+                    args[i] += " ";
+                args[i] += $"\"{file}\"";
 
-                    nproc.Start();
-                    string path = nproc.MainModule.FileName;
-                    KillAllProcessesSpawnedBy(nproc, true);
-
-                    string[] files = this.files.Lines;
-                    string[] args = cmdArgs.Lines;
-
-                    files[i] = path;
-                    if (args[i].Length > 0)
-                        args[i] += " ";
-                    args[i] += $"\"{file}\"";
-
-                    this.files.Lines = files;
-                    cmdArgs.Lines = args;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
+                this.files.Lines = files;
+                cmdArgs.Lines = args;
             }
         }
+
+        private string FindExecutable(string path)
+        {
+            var executable = new StringBuilder(1024);
+            FindExecutable(path, string.Empty, executable);
+            return executable.ToString();
+        }
+
+        [DllImport("shell32.dll", EntryPoint = "FindExecutable")]
+        private static extern long FindExecutable(string lpFile, string lpDirectory, StringBuilder lpResult);
 
         private void browseToolStripMenuItem_Click(object sender, EventArgs e)
         {
