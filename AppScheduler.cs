@@ -5,77 +5,78 @@ namespace AppScheduler
 {
     public partial class AppScheduler : Form
     {
-        private bool _selecting = false;
-        private Dictionary<string, Process> _processes = new Dictionary<string, Process>();
+        private Dictionary<string, Process> Processes = new Dictionary<string, Process>();
+        private bool _noScheduling = false;
 
         public AppScheduler()
         {
             InitializeComponent();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void addFiles_Click(object sender, EventArgs e)
         {
-            openFileDialog1.ShowDialog();
-            _selecting = true;
+            fileDialog.ShowDialog();
+            _noScheduling = true;
 
-            foreach (string file in openFileDialog1.FileNames)
+            foreach (string file in fileDialog.FileNames)
             {
-                if (string.IsNullOrEmpty(file) || file == "openFileDialog1")
+                if (string.IsNullOrEmpty(file))
                     break;
 
                 try
                 {
-                    textBox1.Text += $"{file}{Environment.NewLine}";
-                    textBox2.Text += $"{Interaction.InputBox($"What would you like the time for {file} activation to be (this can be changed later)", "App Scheduler")}{Environment.NewLine}";
-                    textBox3.Text += $"{Environment.NewLine}";
+                    files.Text += $"{file}{Environment.NewLine}";
+                    startTimes.Text += $"{Interaction.InputBox($"What would you like the time for {file} activation to be (this can be changed later)", "App Scheduler")}{Environment.NewLine}";
+                    cmdArgs.Text += $"{Environment.NewLine}";
                 }
                 catch
                 {
                     MessageBox.Show("File time selection prompt was prematurely closed and has defaulted to time 8:00");
-                    textBox1.Text += $"{file}{Environment.NewLine}";
-                    textBox2.Text += $"{"8:00 AM"}{Environment.NewLine}";
-                    textBox3.Text += $"{Environment.NewLine}";
+                    files.Text += $"{file}{Environment.NewLine}";
+                    startTimes.Text += $"{"8:00 AM"}{Environment.NewLine}";
+                    cmdArgs.Text += $"{Environment.NewLine}";
                 }
             }
 
-            _selecting = false;
+            _noScheduling = false;
         }
 
-        private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             Show();
             WindowState = FormWindowState.Normal;
+            notifyIcon.Visible = false;
         }
 
-        private void timer1_Tick(object sender, EventArgs e)
+        private void scheduler_Tick(object sender, EventArgs e)
         {
             if (WindowState == FormWindowState.Minimized)
             {
                 Hide();
-                notifyIcon1.Visible = true;
+                notifyIcon.Visible = true;
             }
 
-            if (_selecting)
+            if (_noScheduling)
                 return;
 
-            foreach (string file in textBox1.Lines)
+            foreach (string file in files.Lines)
             {
                 if (string.IsNullOrEmpty(file))
                     continue;
 
                 if (!Path.IsPathFullyQualified(file))
-                    throw new ArgumentException($"File path {file} cannot be parsed, and is not valid.");
-
-                if (textBox2.Lines.Length <= Array.IndexOf(textBox1.Lines, file))
                     continue;
 
-                if (!DateTime.TryParse(textBox2.Lines[Array.IndexOf(textBox1.Lines, file)], out DateTime startTime))
+                if (startTimes.Lines.Length <= Array.IndexOf(files.Lines, file))
                     continue;
 
-                if ((checkBox1.Checked && DateTime.Now.ToString("HH:mm:ss:f") == startTime.ToString("HH:mm:ss:f")) ||
-                    (!checkBox1.Checked && DateTime.Now.ToString("HH:mm:ss") == startTime.ToString("HH:mm:ss")))
+                if (!DateTime.TryParse(startTimes.Lines[Array.IndexOf(files.Lines, file)], out DateTime startTime))
+                    continue;
+
+                if ((useExactMS.Checked && DateTime.Now.ToString("HH:mm:ss:f") == startTime.ToString("HH:mm:ss:f")) ||
+                    (!useExactMS.Checked && DateTime.Now.ToString("HH:mm:ss") == startTime.ToString("HH:mm:ss")))
                 {
-                    if (_processes.TryGetValue(file, out Process proc))
+                    if (Processes.TryGetValue(file, out Process proc))
                     {
                         proc.Start();
                         continue;
@@ -84,54 +85,117 @@ namespace AppScheduler
                     Process nproc = new Process();
                     nproc.StartInfo.UseShellExecute = true;
                     nproc.StartInfo.FileName = file;
-                    nproc.StartInfo.Arguments = textBox3.Lines.Length > Array.IndexOf(textBox1.Lines, file)
-                        ? textBox3.Lines[Array.IndexOf(textBox1.Lines, file)]
+                    nproc.StartInfo.Arguments = cmdArgs.Lines.Length > Array.IndexOf(files.Lines, file)
+                        ? cmdArgs.Lines[Array.IndexOf(files.Lines, file)]
                         : string.Empty;
 
-                    _processes[file] = nproc;
+                    Processes[file] = nproc;
                     nproc.Start();
                     continue;
                 }
 
-                if (textBox4.Lines.Length <= Array.IndexOf(textBox1.Lines, file))
+                if (endTimes.Lines.Length <= Array.IndexOf(files.Lines, file))
                     continue;
 
-                if (!DateTime.TryParse(textBox4.Lines[Array.IndexOf(textBox1.Lines, file)], out DateTime endTime))
+                if (!DateTime.TryParse(endTimes.Lines[Array.IndexOf(files.Lines, file)], out DateTime endTime))
                     continue;
 
-                if ((checkBox1.Checked && DateTime.Now.ToString("HH:mm:ss:f") == endTime.ToString("HH:mm:ss:f")) ||
-                    (!checkBox1.Checked && DateTime.Now.ToString("HH:mm:ss") == endTime.ToString("HH:mm:ss")))
+                if ((useExactMS.Checked && DateTime.Now.ToString("HH:mm:ss:f") == endTime.ToString("HH:mm:ss:f")) ||
+                    (!useExactMS.Checked && DateTime.Now.ToString("HH:mm:ss") == endTime.ToString("HH:mm:ss")))
                 {
-                    if (_processes.TryGetValue(file, out Process proc))
+                    if (Processes.TryGetValue(file, out Process proc))
                         proc.Kill();
                 }
             }
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void pauseResume_Click(object sender, EventArgs e)
         {
-            if (timer1.Enabled)
+            if (scheduler.Enabled)
             {
-                timer1.Stop();
-                button2.Text = "Resume";
+                scheduler.Stop();
+                pauseResume.Text = "Resume";
             }
             else
             {
-                timer1.Start();
-                button2.Text = "Pause";
+                scheduler.Start();
+                pauseResume.Text = "Pause";
             }
         }
 
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        private void useExactMS_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBox1.Checked)
+            if (useExactMS.Checked)
             {
-                timer1.Interval = 50;
+                scheduler.Interval = 90;
             }
             else
             {
-                timer1.Interval = 400;
+                scheduler.Interval = 400;
             }
+        }
+
+        private void parseFilesAssociation_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < files.Lines.Length; i++)
+            {
+                string file = this.files.Lines[i];
+
+                if (string.IsNullOrEmpty(file))
+                    continue;
+
+                Process nproc = new Process
+                {
+                    StartInfo = { UseShellExecute = true, FileName = file }
+                };
+
+                nproc.Start();
+                string path = nproc.MainModule.FileName;
+                nproc.Kill();
+
+                string[] files = this.files.Lines;
+                string[] args = cmdArgs.Lines;
+
+                files[i] = path;
+                if (args[i].Length > 0)
+                    args[i] += " ";
+                args[i] += $"\"{file}\"";
+
+                this.files.Lines = files;
+                cmdArgs.Lines = args;
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            saveDialog.FileName = "files.txt";
+            saveDialog.ShowDialog();
+            File.WriteAllText(saveDialog.FileName, files.Text);
+
+            saveDialog.FileName = "startTimes.txt";
+            saveDialog.ShowDialog();
+            File.WriteAllText(saveDialog.FileName, startTimes.Text);
+
+            saveDialog.FileName = "endTimes.txt";
+            saveDialog.ShowDialog();
+            File.WriteAllText(saveDialog.FileName, endTimes.Text);
+
+            saveDialog.FileName = "cmdArgs.txt";
+            saveDialog.ShowDialog();
+            File.WriteAllText(saveDialog.FileName, cmdArgs.Text);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            fileDialog.ShowDialog();
+
+            if (fileDialog.FileNames.Length != 4)
+                throw new ArgumentException("All 4 save files must be loaded at once.");
+
+            files.Text = File.ReadAllText(fileDialog.FileNames[0]);
+            startTimes.Text = File.ReadAllText(fileDialog.FileNames[1]);
+            endTimes.Text = File.ReadAllText(fileDialog.FileNames[2]);
+            cmdArgs.Text = File.ReadAllText(fileDialog.FileNames[3]);
         }
     }
 }
