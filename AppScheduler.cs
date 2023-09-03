@@ -6,6 +6,7 @@ namespace AppScheduler
     public partial class AppScheduler : Form
     {
         private bool _selecting = false;
+        private Dictionary<string, Process> _processes = new Dictionary<string, Process>();
 
         public AppScheduler()
         {
@@ -68,23 +69,41 @@ namespace AppScheduler
                 if (textBox2.Lines.Length <= Array.IndexOf(textBox1.Lines, file))
                     continue;
 
-                if (!DateTime.TryParse(textBox2.Lines[Array.IndexOf(textBox1.Lines, file)], out DateTime time))
+                if (!DateTime.TryParse(textBox2.Lines[Array.IndexOf(textBox1.Lines, file)], out DateTime startTime))
                     continue;
 
-                Debug.WriteLine(time.ToString("HH:mm:ss:f"));
-                Debug.WriteLine(DateTime.Now.ToString("HH:mm:ss:f"));
-
-                if ((checkBox1.Checked && DateTime.Now.ToString("HH:mm:ss:f") == time.ToString("HH:mm:ss:f")) ||
-                    (!checkBox1.Checked && DateTime.Now.ToString("HH:mm:ss") == time.ToString("HH:mm:ss")))
+                if ((checkBox1.Checked && DateTime.Now.ToString("HH:mm:ss:f") == startTime.ToString("HH:mm:ss:f")) ||
+                    (!checkBox1.Checked && DateTime.Now.ToString("HH:mm:ss") == startTime.ToString("HH:mm:ss")))
                 {
-                    Process proc = new Process();
-                    proc.StartInfo.UseShellExecute = true;
-                    proc.StartInfo.FileName = file;
-                    proc.StartInfo.Arguments = textBox3.Lines.Length > Array.IndexOf(textBox1.Lines, file)
+                    if (_processes.TryGetValue(file, out Process proc))
+                    {
+                        proc.Start();
+                        continue;
+                    }
+
+                    Process nproc = new Process();
+                    nproc.StartInfo.UseShellExecute = true;
+                    nproc.StartInfo.FileName = file;
+                    nproc.StartInfo.Arguments = textBox3.Lines.Length > Array.IndexOf(textBox1.Lines, file)
                         ? textBox3.Lines[Array.IndexOf(textBox1.Lines, file)]
                         : string.Empty;
 
-                    proc.Start();
+                    _processes[file] = nproc;
+                    nproc.Start();
+                    continue;
+                }
+
+                if (textBox4.Lines.Length <= Array.IndexOf(textBox1.Lines, file))
+                    continue;
+
+                if (!DateTime.TryParse(textBox4.Lines[Array.IndexOf(textBox1.Lines, file)], out DateTime endTime))
+                    continue;
+
+                if ((checkBox1.Checked && DateTime.Now.ToString("HH:mm:ss:f") == endTime.ToString("HH:mm:ss:f")) ||
+                    (!checkBox1.Checked && DateTime.Now.ToString("HH:mm:ss") == endTime.ToString("HH:mm:ss")))
+                {
+                    if (_processes.TryGetValue(file, out Process proc))
+                        proc.Kill();
                 }
             }
         }

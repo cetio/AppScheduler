@@ -42,6 +42,8 @@
             notifyIcon1 = new NotifyIcon(components);
             button2 = new Button();
             checkBox1 = new CheckBox();
+            label4 = new Label();
+            textBox4 = new TextBox();
             SuspendLayout();
             // 
             // button1
@@ -79,7 +81,7 @@
             // 
             // textBox3
             // 
-            textBox3.Location = new Point(376, 56);
+            textBox3.Location = new Point(455, 56);
             textBox3.Multiline = true;
             textBox3.Name = "textBox3";
             textBox3.Size = new Size(157, 357);
@@ -100,14 +102,14 @@
             label2.AutoSize = true;
             label2.Location = new Point(297, 38);
             label2.Name = "label2";
-            label2.Size = new Size(33, 15);
+            label2.Size = new Size(60, 15);
             label2.TabIndex = 5;
-            label2.Text = "Time";
+            label2.Text = "Start Time";
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(376, 38);
+            label3.Location = new Point(455, 38);
             label3.Name = "label3";
             label3.Size = new Size(60, 15);
             label3.TabIndex = 6;
@@ -148,11 +150,31 @@
             checkBox1.UseVisualStyleBackColor = true;
             checkBox1.CheckedChanged += checkBox1_CheckedChanged;
             // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(376, 38);
+            label4.Name = "label4";
+            label4.Size = new Size(56, 15);
+            label4.TabIndex = 10;
+            label4.Text = "End Time";
+            // 
+            // textBox4
+            // 
+            textBox4.Location = new Point(376, 56);
+            textBox4.Multiline = true;
+            textBox4.Name = "textBox4";
+            textBox4.Size = new Size(73, 357);
+            textBox4.TabIndex = 9;
+            textBox4.WordWrap = false;
+            // 
             // AppScheduler
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(545, 424);
+            ClientSize = new Size(621, 424);
+            Controls.Add(label4);
+            Controls.Add(textBox4);
             Controls.Add(checkBox1);
             Controls.Add(button2);
             Controls.Add(label3);
@@ -183,5 +205,7 @@
         private NotifyIcon notifyIcon1;
         private Button button2;
         private CheckBox checkBox1;
+        private Label label4;
+        private TextBox textBox4;
     }
 }
