@@ -218,7 +218,9 @@
             // 
             // useExactMsTimingsToolStripMenuItem
             // 
+            useExactMsTimingsToolStripMenuItem.Checked = true;
             useExactMsTimingsToolStripMenuItem.CheckOnClick = true;
+            useExactMsTimingsToolStripMenuItem.CheckState = CheckState.Checked;
             useExactMsTimingsToolStripMenuItem.Name = "useExactMsTimingsToolStripMenuItem";
             useExactMsTimingsToolStripMenuItem.Size = new Size(191, 22);
             useExactMsTimingsToolStripMenuItem.Text = " Use Exact ms Timings";

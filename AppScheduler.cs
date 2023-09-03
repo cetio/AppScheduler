@@ -82,21 +82,21 @@ namespace AppScheduler
                     (!useExactMsTimingsToolStripMenuItem.Checked && DateTime.Now >= endTime))
                 {
                     if (Processes.TryGetValue(file + i, out Process proc))
-                        KillAllProcessesSpawnedBy(proc.Id);
+                        KillAllProcessesSpawnedBy(proc, true);
 
                     if (nuclearModeToolStripMenuItem.Checked)
-                        KillAllProcessesSpawnedBy(Process.GetCurrentProcess().Id);
+                        KillAllProcessesSpawnedBy(Process.GetCurrentProcess(), false);
                 }
             }
         }
 
-        private static void KillAllProcessesSpawnedBy(int parentProcessId)
+        private static void KillAllProcessesSpawnedBy(Process parentProcess, bool killSelf)
         {
             // NOTE: Process Ids are reused!
             ManagementObjectSearcher searcher = new ManagementObjectSearcher(
                 "SELECT * " +
                 "FROM Win32_Process " +
-                "WHERE ParentProcessId=" + parentProcessId);
+                "WHERE ParentProcessId=" + parentProcess.Id);
             ManagementObjectCollection collection = searcher.Get();
             if (collection.Count > 0)
             {
@@ -105,13 +105,16 @@ namespace AppScheduler
                     int childProcessId = (int)(uint)item["ProcessId"];
                     if (childProcessId != Process.GetCurrentProcess().Id)
                     {
-                        KillAllProcessesSpawnedBy(childProcessId);
-
                         Process childProcess = Process.GetProcessById(childProcessId);
+
+                        KillAllProcessesSpawnedBy(childProcess, false);
                         childProcess.Kill();
                     }
                 }
             }
+
+            if (killSelf)
+                parentProcess.Kill();
         }
 
         private void useExactMS_CheckedChanged(object sender, EventArgs e)
@@ -133,8 +136,21 @@ namespace AppScheduler
                 try
                 {
                     string file = this.files.Lines[i];
+                    string ext = Path.GetExtension(file);
 
                     if (string.IsNullOrEmpty(file))
+                        continue;
+
+                    if (ext == ".exe" ||
+                        ext == ".cmd" ||
+                        ext == ".bat" ||
+                        ext == ".msi" ||
+                        ext == ".cmd" ||
+                        ext == ".com" ||
+                        ext == ".inx" ||
+                        ext == ".lnk" ||
+                        ext == ".msp" ||
+                        ext == ".mst")
                         continue;
 
                     Process nproc = new Process
@@ -144,7 +160,7 @@ namespace AppScheduler
 
                     nproc.Start();
                     string path = nproc.MainModule.FileName;
-                    nproc.Kill();
+                    KillAllProcessesSpawnedBy(nproc, true);
 
                     string[] files = this.files.Lines;
                     string[] args = cmdArgs.Lines;
@@ -168,6 +184,11 @@ namespace AppScheduler
         {
             fileDialog.ShowDialog();
             _noScheduling = true;
+
+            files.Text.TrimEnd();
+            startTimes.Text.TrimEnd();
+            endTimes.Text.TrimEnd();
+            cmdArgs.Text.TrimEnd();
 
             foreach (string file in fileDialog.FileNames)
             {
