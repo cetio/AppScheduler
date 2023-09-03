@@ -32,8 +32,10 @@ namespace AppScheduler
             if (_noScheduling)
                 return;
 
-            foreach (string file in files.Lines)
+            for (int i = 0; i < files.Lines.Length; i++)
             {
+                string file = files.Lines[i];
+
                 if (string.IsNullOrEmpty(file))
                     continue;
 
@@ -52,7 +54,7 @@ namespace AppScheduler
                         continue;
                     }
 
-                    if (Processes.TryGetValue(file, out Process proc))
+                    if (Processes.TryGetValue(file + i, out Process proc))
                     {
                         proc.Start();
                         continue;
@@ -65,7 +67,7 @@ namespace AppScheduler
                         ? cmdArgs.Lines[Array.IndexOf(files.Lines, file)]
                         : string.Empty;
 
-                    Processes[file] = nproc;
+                    Processes[file + i] = nproc;
                     nproc.Start();
                     continue;
                 }
@@ -79,7 +81,7 @@ namespace AppScheduler
                 if ((useExactMS.Checked && DateTime.Now >= endTime) ||
                     (!useExactMS.Checked && DateTime.Now >= endTime))
                 {
-                    if (Processes.TryGetValue(file, out Process proc))
+                    if (Processes.TryGetValue(file + i, out Process proc))
                         KillAllProcessesSpawnedBy(proc.Id);
 
                     if (checkBox1.Checked)
