@@ -13,34 +13,6 @@ namespace AppScheduler
             InitializeComponent();
         }
 
-        private void addFiles_Click(object sender, EventArgs e)
-        {
-            fileDialog.ShowDialog();
-            _noScheduling = true;
-
-            foreach (string file in fileDialog.FileNames)
-            {
-                if (string.IsNullOrEmpty(file))
-                    break;
-
-                try
-                {
-                    files.Text += $"{file}{Environment.NewLine}";
-                    startTimes.Text += $"{Interaction.InputBox($"What would you like the time for {file} activation to be (this can be changed later)", "App Scheduler")}{Environment.NewLine}";
-                    cmdArgs.Text += $"{Environment.NewLine}";
-                }
-                catch
-                {
-                    MessageBox.Show("File time selection prompt was prematurely closed and has defaulted to time 8:00");
-                    files.Text += $"{file}{Environment.NewLine}";
-                    startTimes.Text += $"{"8:00 AM"}{Environment.NewLine}";
-                    cmdArgs.Text += $"{Environment.NewLine}";
-                }
-            }
-
-            _noScheduling = false;
-        }
-
         private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             Show();
@@ -64,9 +36,6 @@ namespace AppScheduler
                 if (string.IsNullOrEmpty(file))
                     continue;
 
-                if (!Path.IsPathFullyQualified(file))
-                    continue;
-
                 if (startTimes.Lines.Length <= Array.IndexOf(files.Lines, file))
                     continue;
 
@@ -76,6 +45,12 @@ namespace AppScheduler
                 if ((useExactMS.Checked && DateTime.Now.ToString("HH:mm:ss:f") == startTime.ToString("HH:mm:ss:f")) ||
                     (!useExactMS.Checked && DateTime.Now.ToString("HH:mm:ss") == startTime.ToString("HH:mm:ss")))
                 {
+                    if (!Path.IsPathFullyQualified(file))
+                    {
+                        MessageBox.Show($"File path {file} is not valid.");
+                        continue;
+                    }
+
                     if (Processes.TryGetValue(file, out Process proc))
                     {
                         proc.Start();
@@ -166,7 +141,35 @@ namespace AppScheduler
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void browseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fileDialog.ShowDialog();
+            _noScheduling = true;
+
+            foreach (string file in fileDialog.FileNames)
+            {
+                if (string.IsNullOrEmpty(file))
+                    break;
+
+                try
+                {
+                    files.Text += $"{file}{Environment.NewLine}";
+                    startTimes.Text += $"{Interaction.InputBox($"What would you like the time for {file} activation to be (this can be changed later)", "App Scheduler")}{Environment.NewLine}";
+                    cmdArgs.Text += $"{Environment.NewLine}";
+                }
+                catch
+                {
+                    MessageBox.Show("File time selection prompt was prematurely closed and has defaulted to time 8:00");
+                    files.Text += $"{file}{Environment.NewLine}";
+                    startTimes.Text += $"{"8:00 AM"}{Environment.NewLine}";
+                    cmdArgs.Text += $"{Environment.NewLine}";
+                }
+            }
+
+            _noScheduling = false;
+        }
+
+        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             saveDialog.FileName = "files.txt";
             saveDialog.ShowDialog();
@@ -185,7 +188,7 @@ namespace AppScheduler
             File.WriteAllText(saveDialog.FileName, cmdArgs.Text);
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
             fileDialog.ShowDialog();
 
@@ -196,6 +199,45 @@ namespace AppScheduler
             startTimes.Text = File.ReadAllText(fileDialog.FileNames[1]);
             endTimes.Text = File.ReadAllText(fileDialog.FileNames[2]);
             cmdArgs.Text = File.ReadAllText(fileDialog.FileNames[3]);
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            File.WriteAllText(Application.StartupPath + "\\files.txt", files.Text);
+            File.WriteAllText(Application.StartupPath + "\\startTimes.txt", startTimes.Text);
+            File.WriteAllText(Application.StartupPath + "\\endTimes.txt", endTimes.Text);
+            File.WriteAllText(Application.StartupPath + "\\cmdArgs.txt", cmdArgs.Text);
+        }
+
+        private void createManifestToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            File.WriteAllText(Application.StartupPath + "\\manifest", string.Empty);
+        }
+
+        private void AppScheduler_Load(object sender, EventArgs e)
+        {
+            if (!File.Exists(Application.StartupPath + "\\manifest"))
+                return;
+
+            if (File.Exists(Application.StartupPath + "\\files.txt"))
+                files.Text = File.ReadAllText(Application.StartupPath + "\\files.txt");
+            else
+                MessageBox.Show("Manifest exists but files save does not.");
+
+            if (File.Exists(Application.StartupPath + "\\startTimes.txt"))
+                startTimes.Text = File.ReadAllText(Application.StartupPath + "\\startTimes.txt");
+            else
+                MessageBox.Show("Manifest exists but startTimes save does not.");
+
+            if (File.Exists(Application.StartupPath + "\\endTimes.txt"))
+                endTimes.Text = File.ReadAllText(Application.StartupPath + "\\endTimes.txt");
+            else
+                MessageBox.Show("Manifest exists but endTimes save does not.");
+
+            if (File.Exists(Application.StartupPath + "\\cmdArgs.txt"))
+                cmdArgs.Text = File.ReadAllText(Application.StartupPath + "\\cmdArgs.txt");
+            else
+                MessageBox.Show("Manifest exists but cmdArgs save does not.");
         }
     }
 }
