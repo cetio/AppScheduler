@@ -1,5 +1,6 @@
 using Microsoft.VisualBasic;
 using System.Diagnostics;
+using System.Management;
 
 namespace AppScheduler
 {
@@ -79,7 +80,31 @@ namespace AppScheduler
                     (!useExactMS.Checked && DateTime.Now.ToString("HH:mm:ss") == endTime.ToString("HH:mm:ss")))
                 {
                     if (Processes.TryGetValue(file, out Process proc))
-                        proc.Kill();
+                        KillAllProcessesSpawnedBy(proc.Id);
+                }
+            }
+        }
+
+        private static void KillAllProcessesSpawnedBy(int parentProcessId)
+        {
+            // NOTE: Process Ids are reused!
+            ManagementObjectSearcher searcher = new ManagementObjectSearcher(
+                "SELECT * " +
+                "FROM Win32_Process " +
+                "WHERE ParentProcessId=" + parentProcessId);
+            ManagementObjectCollection collection = searcher.Get();
+            if (collection.Count > 0)
+            {
+                foreach (var item in collection)
+                {
+                    int childProcessId = (int)(uint)item["ProcessId"];
+                    if (childProcessId != Process.GetCurrentProcess().Id)
+                    {
+                        KillAllProcessesSpawnedBy(childProcessId);
+
+                        Process childProcess = Process.GetProcessById(childProcessId);
+                        childProcess.Kill();
+                    }
                 }
             }
         }

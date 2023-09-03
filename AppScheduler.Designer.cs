@@ -44,14 +44,14 @@
             endTimes = new TextBox();
             parseFilesAssociation = new Button();
             saveDialog = new SaveFileDialog();
-            menuStrip1 = new MenuStrip();
+            menuStrip = new MenuStrip();
             fileToolStripMenuItem = new ToolStripMenuItem();
             browseToolStripMenuItem = new ToolStripMenuItem();
             saveAsToolStripMenuItem = new ToolStripMenuItem();
             saveToolStripMenuItem = new ToolStripMenuItem();
             loadToolStripMenuItem = new ToolStripMenuItem();
             createManifestToolStripMenuItem = new ToolStripMenuItem();
-            menuStrip1.SuspendLayout();
+            menuStrip.SuspendLayout();
             SuspendLayout();
             // 
             // fileDialog
@@ -132,7 +132,7 @@
             useExactMS.AutoSize = true;
             useExactMS.Checked = true;
             useExactMS.CheckState = CheckState.Checked;
-            useExactMS.Location = new Point(342, 393);
+            useExactMS.Location = new Point(12, 421);
             useExactMS.Name = "useExactMS";
             useExactMS.Size = new Size(221, 19);
             useExactMS.TabIndex = 8;
@@ -169,14 +169,14 @@
             parseFilesAssociation.UseVisualStyleBackColor = true;
             parseFilesAssociation.Click += parseFilesAssociation_Click;
             // 
-            // menuStrip1
+            // menuStrip
             // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem });
-            menuStrip1.Location = new Point(0, 0);
-            menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(621, 24);
-            menuStrip1.TabIndex = 15;
-            menuStrip1.Text = "menuStrip1";
+            menuStrip.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem });
+            menuStrip.Location = new Point(0, 0);
+            menuStrip.Name = "menuStrip";
+            menuStrip.Size = new Size(621, 24);
+            menuStrip.TabIndex = 15;
+            menuStrip.Text = "menuStrip";
             // 
             // fileToolStripMenuItem
             // 
@@ -224,7 +224,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(621, 423);
+            ClientSize = new Size(621, 452);
             Controls.Add(startTimeLabel);
             Controls.Add(parseFilesAssociation);
             Controls.Add(endTimeLabel);
@@ -235,16 +235,16 @@
             Controls.Add(cmdArgs);
             Controls.Add(startTimes);
             Controls.Add(files);
-            Controls.Add(menuStrip1);
+            Controls.Add(menuStrip);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             Icon = (Icon)resources.GetObject("$this.Icon");
-            MainMenuStrip = menuStrip1;
+            MainMenuStrip = menuStrip;
             MaximizeBox = false;
             Name = "AppScheduler";
             Text = "App Scheduler";
             Load += AppScheduler_Load;
-            menuStrip1.ResumeLayout(false);
-            menuStrip1.PerformLayout();
+            menuStrip.ResumeLayout(false);
+            menuStrip.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -264,7 +264,7 @@
         private TextBox endTimes;
         private Button parseFilesAssociation;
         private SaveFileDialog saveDialog;
-        private MenuStrip menuStrip1;
+        private MenuStrip menuStrip;
         private ToolStripMenuItem fileToolStripMenuItem;
         private ToolStripMenuItem browseToolStripMenuItem;
         private ToolStripMenuItem saveAsToolStripMenuItem;
