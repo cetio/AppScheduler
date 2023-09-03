@@ -79,8 +79,17 @@ namespace AppScheduler
                     if (minimizeProcessToolStripMenuItem.Checked)
                         nproc.StartInfo.WindowStyle = ProcessWindowStyle.Minimized;
 
-                    Processes[file + i] = nproc;
-                    nproc.Start();
+                    if (!Processes.ContainsKey(file + i))
+                    {
+                        Processes[file + i] = nproc;
+                        nproc.Start();
+                    }
+                    else
+                    {
+                        if (Processes[file + i].HasExited)
+                            nproc.Start();
+                    }
+
                     continue;
                 }
 
@@ -93,20 +102,26 @@ namespace AppScheduler
                 if ((useExactMsTimingsToolStripMenuItem.Checked && DateTime.Now >= endTime) ||
                     (!useExactMsTimingsToolStripMenuItem.Checked && DateTime.Now >= endTime))
                 {
-                    if (Processes.TryGetValue(file + i, out Process proc))
+                    if (killModeTrackToolStripMenuItem.Checked && Processes.TryGetValue(file + i, out Process proc))
                         KillAllProcessesSpawnedBy(proc, true);
 
                     if (nuclearModeToolStripMenuItem.Checked)
                         KillAllProcessesSpawnedBy(Process.GetCurrentProcess(), false);
+
+                    if (killModeTaskToolStripMenuItem.Checked && Processes.TryGetValue(file + i, out Process nproc))
+                    {
+                        foreach (Process iproc in Process.GetProcessesByName(nproc.ProcessName))
+                            KillAllProcessesSpawnedBy(iproc, true);
+                    }
+
+                    if (killModeWaitToolStripMenuItem.Checked && Processes.TryGetValue(file + i, out Process dproc))
+                        dproc.WaitForExit();
                 }
             }
         }
 
         private static void KillAllProcessesSpawnedBy(Process parentProcess, bool killSelf)
         {
-            if (killSelf)
-                parentProcess.Kill();
-
             // NOTE: Process Ids are reused!
             ManagementObjectSearcher searcher = new ManagementObjectSearcher(
                 "SELECT * " +
@@ -122,11 +137,14 @@ namespace AppScheduler
                     {
                         Process childProcess = Process.GetProcessById(childProcessId);
 
-                        KillAllProcessesSpawnedBy(childProcess, false);
                         childProcess.Kill();
+                        KillAllProcessesSpawnedBy(childProcess, false);
                     }
                 }
             }
+
+            if (killSelf)
+                parentProcess.Kill();
         }
 
         private void useExactMS_CheckedChanged(object sender, EventArgs e)
@@ -146,8 +164,19 @@ namespace AppScheduler
             for (int i = 0; i < files.Lines.Length; i++)
             {
                 string file = this.files.Lines[i];
+                string ext = Path.GetExtension(file);
 
                 if (string.IsNullOrEmpty(file))
+                    continue;
+
+                if (ext == ".exe" ||
+                    ext == ".cmd" ||
+                    ext == ".bat" ||
+                    ext == ".msi" ||
+                    ext == ".msp")
+                    continue;
+
+                if (string.IsNullOrEmpty(FindExecutable(file)))
                     continue;
 
                 string[] files = this.files.Lines;

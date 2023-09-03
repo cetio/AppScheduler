@@ -60,6 +60,9 @@
             runAsAdministratorToolStripMenuItem = new ToolStripMenuItem();
             toolStripTextBox1 = new ToolStripTextBox();
             filesLabel = new Label();
+            killModeTaskToolStripMenuItem = new ToolStripMenuItem();
+            killModeWaitToolStripMenuItem = new ToolStripMenuItem();
+            killModeTrackToolStripMenuItem = new ToolStripMenuItem();
             menuStrip.SuspendLayout();
             SuspendLayout();
             // 
@@ -224,7 +227,7 @@
             // 
             // schedulingToolStripMenuItem
             // 
-            schedulingToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { useExactMsTimingsToolStripMenuItem, pauseSchedulingToolStripMenuItem, nuclearModeToolStripMenuItem, fullscreenProcessToolStripMenuItem, minimizeProcessToolStripMenuItem, runAsAdministratorToolStripMenuItem });
+            schedulingToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { useExactMsTimingsToolStripMenuItem, pauseSchedulingToolStripMenuItem, fullscreenProcessToolStripMenuItem, minimizeProcessToolStripMenuItem, runAsAdministratorToolStripMenuItem, nuclearModeToolStripMenuItem, killModeTaskToolStripMenuItem, killModeWaitToolStripMenuItem, killModeTrackToolStripMenuItem });
             schedulingToolStripMenuItem.Name = "schedulingToolStripMenuItem";
             schedulingToolStripMenuItem.Size = new Size(78, 23);
             schedulingToolStripMenuItem.Text = "Scheduling";
@@ -251,7 +254,7 @@
             nuclearModeToolStripMenuItem.CheckOnClick = true;
             nuclearModeToolStripMenuItem.Name = "nuclearModeToolStripMenuItem";
             nuclearModeToolStripMenuItem.Size = new Size(188, 22);
-            nuclearModeToolStripMenuItem.Text = "Nuclear Mode";
+            nuclearModeToolStripMenuItem.Text = "Kill Mode (Children)";
             nuclearModeToolStripMenuItem.ToolTipText = "kill all children 😧";
             // 
             // fullscreenProcessToolStripMenuItem
@@ -291,6 +294,28 @@
             filesLabel.Size = new Size(30, 15);
             filesLabel.TabIndex = 17;
             filesLabel.Text = "Files";
+            // 
+            // killModeTaskToolStripMenuItem
+            // 
+            killModeTaskToolStripMenuItem.CheckOnClick = true;
+            killModeTaskToolStripMenuItem.Name = "killModeTaskToolStripMenuItem";
+            killModeTaskToolStripMenuItem.Size = new Size(188, 22);
+            killModeTaskToolStripMenuItem.Text = "Kill Mode (Task)";
+            // 
+            // killModeWaitToolStripMenuItem
+            // 
+            killModeWaitToolStripMenuItem.Checked = true;
+            killModeWaitToolStripMenuItem.CheckOnClick = true;
+            killModeWaitToolStripMenuItem.CheckState = CheckState.Checked;
+            killModeWaitToolStripMenuItem.Name = "killModeWaitToolStripMenuItem";
+            killModeWaitToolStripMenuItem.Size = new Size(188, 22);
+            killModeWaitToolStripMenuItem.Text = "Kill Mode (Wait)";
+            // 
+            // killModeTrackToolStripMenuItem
+            // 
+            killModeTrackToolStripMenuItem.Name = "killModeTrackToolStripMenuItem";
+            killModeTrackToolStripMenuItem.Size = new Size(188, 22);
+            killModeTrackToolStripMenuItem.Text = "Kill Mode (Track)";
             // 
             // AppScheduler
             // 
@@ -351,5 +376,8 @@
         private ToolStripMenuItem fullscreenProcessToolStripMenuItem;
         private ToolStripMenuItem minimizeProcessToolStripMenuItem;
         private ToolStripMenuItem runAsAdministratorToolStripMenuItem;
+        private ToolStripMenuItem killModeTaskToolStripMenuItem;
+        private ToolStripMenuItem killModeWaitToolStripMenuItem;
+        private ToolStripMenuItem killModeTrackToolStripMenuItem;
     }
 }
