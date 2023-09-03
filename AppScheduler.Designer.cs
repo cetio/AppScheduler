@@ -116,6 +116,7 @@
             // timer1
             // 
             timer1.Enabled = true;
+            timer1.Interval = 50;
             timer1.Tick += timer1_Tick;
             // 
             // notifyIcon1
@@ -145,6 +146,7 @@
             checkBox1.TabIndex = 8;
             checkBox1.Text = "Use Exact MS (disable if not working)";
             checkBox1.UseVisualStyleBackColor = true;
+            checkBox1.CheckedChanged += checkBox1_CheckedChanged;
             // 
             // AppScheduler
             // 

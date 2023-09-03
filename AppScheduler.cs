@@ -102,5 +102,17 @@ namespace AppScheduler
                 button2.Text = "Pause";
             }
         }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox1.Checked)
+            {
+                timer1.Interval = 50;
+            }
+            else
+            {
+                timer1.Interval = 400;
+            }
+        }
     }
 }
