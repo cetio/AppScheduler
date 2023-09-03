@@ -38,8 +38,6 @@
             cmdArgsLabel = new Label();
             scheduler = new System.Windows.Forms.Timer(components);
             notifyIcon = new NotifyIcon(components);
-            pauseResume = new Button();
-            useExactMS = new CheckBox();
             endTimeLabel = new Label();
             endTimes = new TextBox();
             parseFilesAssociation = new Button();
@@ -47,11 +45,16 @@
             menuStrip = new MenuStrip();
             fileToolStripMenuItem = new ToolStripMenuItem();
             browseToolStripMenuItem = new ToolStripMenuItem();
-            saveAsToolStripMenuItem = new ToolStripMenuItem();
-            saveToolStripMenuItem = new ToolStripMenuItem();
-            loadToolStripMenuItem = new ToolStripMenuItem();
             createManifestToolStripMenuItem = new ToolStripMenuItem();
-            checkBox1 = new CheckBox();
+            toolStripSeparator1 = new ToolStripSeparator();
+            saveToolStripMenuItem = new ToolStripMenuItem();
+            saveAsToolStripMenuItem = new ToolStripMenuItem();
+            loadToolStripMenuItem = new ToolStripMenuItem();
+            schedulingToolStripMenuItem = new ToolStripMenuItem();
+            useExactMsTimingsToolStripMenuItem = new ToolStripMenuItem();
+            pauseSchedulingToolStripMenuItem = new ToolStripMenuItem();
+            nuclearModeToolStripMenuItem = new ToolStripMenuItem();
+            filesLabel = new Label();
             menuStrip.SuspendLayout();
             SuspendLayout();
             // 
@@ -61,16 +64,16 @@
             // 
             // files
             // 
-            files.Location = new Point(12, 27);
+            files.Location = new Point(169, 49);
             files.Multiline = true;
             files.Name = "files";
-            files.Size = new Size(279, 357);
+            files.Size = new Size(363, 357);
             files.TabIndex = 1;
             files.WordWrap = false;
             // 
             // startTimes
             // 
-            startTimes.Location = new Point(297, 27);
+            startTimes.Location = new Point(11, 49);
             startTimes.Multiline = true;
             startTimes.Name = "startTimes";
             startTimes.Size = new Size(73, 357);
@@ -79,18 +82,18 @@
             // 
             // cmdArgs
             // 
-            cmdArgs.Location = new Point(455, 27);
+            cmdArgs.Location = new Point(538, 49);
             cmdArgs.Multiline = true;
             cmdArgs.Name = "cmdArgs";
-            cmdArgs.Size = new Size(157, 357);
+            cmdArgs.Size = new Size(297, 357);
             cmdArgs.TabIndex = 3;
             cmdArgs.WordWrap = false;
             // 
             // startTimeLabel
             // 
             startTimeLabel.AutoSize = true;
-            startTimeLabel.BackColor = SystemColors.ButtonHighlight;
-            startTimeLabel.Location = new Point(297, 5);
+            startTimeLabel.BackColor = SystemColors.Control;
+            startTimeLabel.Location = new Point(11, 27);
             startTimeLabel.Name = "startTimeLabel";
             startTimeLabel.Size = new Size(60, 15);
             startTimeLabel.TabIndex = 5;
@@ -99,8 +102,8 @@
             // cmdArgsLabel
             // 
             cmdArgsLabel.AutoSize = true;
-            cmdArgsLabel.BackColor = SystemColors.ButtonHighlight;
-            cmdArgsLabel.Location = new Point(455, 5);
+            cmdArgsLabel.BackColor = SystemColors.Control;
+            cmdArgsLabel.Location = new Point(538, 27);
             cmdArgsLabel.Name = "cmdArgsLabel";
             cmdArgsLabel.Size = new Size(60, 15);
             cmdArgsLabel.TabIndex = 6;
@@ -118,34 +121,11 @@
             notifyIcon.Text = "App Scheduler";
             notifyIcon.MouseDoubleClick += notifyIcon_MouseDoubleClick;
             // 
-            // pauseResume
-            // 
-            pauseResume.Location = new Point(237, 390);
-            pauseResume.Name = "pauseResume";
-            pauseResume.Size = new Size(93, 23);
-            pauseResume.TabIndex = 7;
-            pauseResume.Text = "Pause";
-            pauseResume.UseVisualStyleBackColor = true;
-            pauseResume.Click += pauseResume_Click;
-            // 
-            // useExactMS
-            // 
-            useExactMS.AutoSize = true;
-            useExactMS.Checked = true;
-            useExactMS.CheckState = CheckState.Checked;
-            useExactMS.Location = new Point(12, 421);
-            useExactMS.Name = "useExactMS";
-            useExactMS.Size = new Size(221, 19);
-            useExactMS.TabIndex = 8;
-            useExactMS.Text = "Use Exact MS (disable if not working)";
-            useExactMS.UseVisualStyleBackColor = true;
-            useExactMS.CheckedChanged += useExactMS_CheckedChanged;
-            // 
             // endTimeLabel
             // 
             endTimeLabel.AutoSize = true;
-            endTimeLabel.BackColor = SystemColors.ButtonHighlight;
-            endTimeLabel.Location = new Point(376, 5);
+            endTimeLabel.BackColor = SystemColors.Control;
+            endTimeLabel.Location = new Point(90, 27);
             endTimeLabel.Name = "endTimeLabel";
             endTimeLabel.Size = new Size(56, 15);
             endTimeLabel.TabIndex = 10;
@@ -153,7 +133,7 @@
             // 
             // endTimes
             // 
-            endTimes.Location = new Point(376, 27);
+            endTimes.Location = new Point(90, 49);
             endTimes.Multiline = true;
             endTimes.Name = "endTimes";
             endTimes.Size = new Size(73, 357);
@@ -162,87 +142,123 @@
             // 
             // parseFilesAssociation
             // 
-            parseFilesAssociation.Location = new Point(12, 390);
+            parseFilesAssociation.Location = new Point(206, 23);
             parseFilesAssociation.Name = "parseFilesAssociation";
-            parseFilesAssociation.Size = new Size(219, 23);
+            parseFilesAssociation.Size = new Size(187, 23);
             parseFilesAssociation.TabIndex = 12;
-            parseFilesAssociation.Text = "Parse Files As Associated Process";
+            parseFilesAssociation.Text = "File 2 Exe (to allow cmd args)";
             parseFilesAssociation.UseVisualStyleBackColor = true;
             parseFilesAssociation.Click += parseFilesAssociation_Click;
             // 
             // menuStrip
             // 
-            menuStrip.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem });
+            menuStrip.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, schedulingToolStripMenuItem });
             menuStrip.Location = new Point(0, 0);
             menuStrip.Name = "menuStrip";
-            menuStrip.Size = new Size(621, 24);
+            menuStrip.Size = new Size(849, 24);
             menuStrip.TabIndex = 15;
             menuStrip.Text = "menuStrip";
             // 
             // fileToolStripMenuItem
             // 
-            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { browseToolStripMenuItem, saveAsToolStripMenuItem, saveToolStripMenuItem, loadToolStripMenuItem, createManifestToolStripMenuItem });
+            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { browseToolStripMenuItem, createManifestToolStripMenuItem, toolStripSeparator1, saveToolStripMenuItem, saveAsToolStripMenuItem, loadToolStripMenuItem });
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            fileToolStripMenuItem.Size = new Size(42, 20);
-            fileToolStripMenuItem.Text = "Files";
+            fileToolStripMenuItem.Size = new Size(61, 20);
+            fileToolStripMenuItem.Text = "Options";
             // 
             // browseToolStripMenuItem
             // 
             browseToolStripMenuItem.Name = "browseToolStripMenuItem";
-            browseToolStripMenuItem.Size = new Size(157, 22);
+            browseToolStripMenuItem.Size = new Size(170, 22);
             browseToolStripMenuItem.Text = "Browse";
             browseToolStripMenuItem.Click += browseToolStripMenuItem_Click;
             // 
-            // saveAsToolStripMenuItem
+            // createManifestToolStripMenuItem
             // 
-            saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            saveAsToolStripMenuItem.Size = new Size(157, 22);
-            saveAsToolStripMenuItem.Text = "Save As";
-            saveAsToolStripMenuItem.Click += saveAsToolStripMenuItem_Click;
+            createManifestToolStripMenuItem.Checked = true;
+            createManifestToolStripMenuItem.CheckOnClick = true;
+            createManifestToolStripMenuItem.CheckState = CheckState.Checked;
+            createManifestToolStripMenuItem.Name = "createManifestToolStripMenuItem";
+            createManifestToolStripMenuItem.Size = new Size(170, 22);
+            createManifestToolStripMenuItem.Text = "Auto Load Default";
+            createManifestToolStripMenuItem.Click += createManifestToolStripMenuItem_Click;
+            // 
+            // toolStripSeparator1
+            // 
+            toolStripSeparator1.Name = "toolStripSeparator1";
+            toolStripSeparator1.Size = new Size(167, 6);
             // 
             // saveToolStripMenuItem
             // 
             saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            saveToolStripMenuItem.Size = new Size(157, 22);
+            saveToolStripMenuItem.Size = new Size(170, 22);
             saveToolStripMenuItem.Text = "Save";
             saveToolStripMenuItem.Click += saveToolStripMenuItem_Click;
+            // 
+            // saveAsToolStripMenuItem
+            // 
+            saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
+            saveAsToolStripMenuItem.Size = new Size(170, 22);
+            saveAsToolStripMenuItem.Text = "Save As";
+            saveAsToolStripMenuItem.Click += saveAsToolStripMenuItem_Click;
             // 
             // loadToolStripMenuItem
             // 
             loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            loadToolStripMenuItem.Size = new Size(157, 22);
+            loadToolStripMenuItem.Size = new Size(170, 22);
             loadToolStripMenuItem.Text = "Load";
             loadToolStripMenuItem.Click += loadToolStripMenuItem_Click;
             // 
-            // createManifestToolStripMenuItem
+            // schedulingToolStripMenuItem
             // 
-            createManifestToolStripMenuItem.Name = "createManifestToolStripMenuItem";
-            createManifestToolStripMenuItem.Size = new Size(157, 22);
-            createManifestToolStripMenuItem.Text = "Create Manifest";
-            createManifestToolStripMenuItem.Click += createManifestToolStripMenuItem_Click;
+            schedulingToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { useExactMsTimingsToolStripMenuItem, pauseSchedulingToolStripMenuItem, nuclearModeToolStripMenuItem });
+            schedulingToolStripMenuItem.Name = "schedulingToolStripMenuItem";
+            schedulingToolStripMenuItem.Size = new Size(78, 20);
+            schedulingToolStripMenuItem.Text = "Scheduling";
             // 
-            // checkBox1
+            // useExactMsTimingsToolStripMenuItem
             // 
-            checkBox1.AutoSize = true;
-            checkBox1.Location = new Point(239, 421);
-            checkBox1.Name = "checkBox1";
-            checkBox1.Size = new Size(203, 19);
-            checkBox1.TabIndex = 16;
-            checkBox1.Text = "Nuclear Mode (kill all children 😧)";
-            checkBox1.UseVisualStyleBackColor = true;
+            useExactMsTimingsToolStripMenuItem.CheckOnClick = true;
+            useExactMsTimingsToolStripMenuItem.Name = "useExactMsTimingsToolStripMenuItem";
+            useExactMsTimingsToolStripMenuItem.Size = new Size(191, 22);
+            useExactMsTimingsToolStripMenuItem.Text = " Use Exact ms Timings";
+            // 
+            // pauseSchedulingToolStripMenuItem
+            // 
+            pauseSchedulingToolStripMenuItem.CheckOnClick = true;
+            pauseSchedulingToolStripMenuItem.Name = "pauseSchedulingToolStripMenuItem";
+            pauseSchedulingToolStripMenuItem.Size = new Size(191, 22);
+            pauseSchedulingToolStripMenuItem.Text = "Pause Scheduling";
+            pauseSchedulingToolStripMenuItem.Click += pauseSchedulingToolStripMenuItem_Click;
+            // 
+            // nuclearModeToolStripMenuItem
+            // 
+            nuclearModeToolStripMenuItem.CheckOnClick = true;
+            nuclearModeToolStripMenuItem.Name = "nuclearModeToolStripMenuItem";
+            nuclearModeToolStripMenuItem.Size = new Size(191, 22);
+            nuclearModeToolStripMenuItem.Text = "Nuclear Mode";
+            nuclearModeToolStripMenuItem.ToolTipText = "kill all children 😧";
+            // 
+            // filesLabel
+            // 
+            filesLabel.AutoSize = true;
+            filesLabel.BackColor = SystemColors.Control;
+            filesLabel.Location = new Point(169, 27);
+            filesLabel.Name = "filesLabel";
+            filesLabel.Size = new Size(30, 15);
+            filesLabel.TabIndex = 17;
+            filesLabel.Text = "Files";
             // 
             // AppScheduler
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(621, 452);
-            Controls.Add(checkBox1);
+            ClientSize = new Size(849, 418);
+            Controls.Add(filesLabel);
             Controls.Add(startTimeLabel);
             Controls.Add(parseFilesAssociation);
             Controls.Add(endTimeLabel);
             Controls.Add(endTimes);
-            Controls.Add(useExactMS);
-            Controls.Add(pauseResume);
             Controls.Add(cmdArgsLabel);
             Controls.Add(cmdArgs);
             Controls.Add(startTimes);
@@ -270,8 +286,6 @@
         private Label cmdArgsLabel;
         private System.Windows.Forms.Timer scheduler;
         private NotifyIcon notifyIcon;
-        private Button pauseResume;
-        private CheckBox useExactMS;
         private Label endTimeLabel;
         private TextBox endTimes;
         private Button parseFilesAssociation;
@@ -283,6 +297,11 @@
         private ToolStripMenuItem saveToolStripMenuItem;
         private ToolStripMenuItem loadToolStripMenuItem;
         private ToolStripMenuItem createManifestToolStripMenuItem;
-        private CheckBox checkBox1;
+        private ToolStripSeparator toolStripSeparator1;
+        private Label filesLabel;
+        private ToolStripMenuItem schedulingToolStripMenuItem;
+        private ToolStripMenuItem useExactMsTimingsToolStripMenuItem;
+        private ToolStripMenuItem pauseSchedulingToolStripMenuItem;
+        private ToolStripMenuItem nuclearModeToolStripMenuItem;
     }
 }

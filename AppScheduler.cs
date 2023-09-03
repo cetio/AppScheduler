@@ -45,8 +45,8 @@ namespace AppScheduler
                 if (!DateTime.TryParse(startTimes.Lines[Array.IndexOf(files.Lines, file)], out DateTime startTime))
                     continue;
 
-                if ((useExactMS.Checked && DateTime.Now.ToString("HH:mm:ss:f") == startTime.ToString("HH:mm:ss:f")) ||
-                    (!useExactMS.Checked && DateTime.Now.ToString("HH:mm:ss") == startTime.ToString("HH:mm:ss")))
+                if ((useExactMsTimingsToolStripMenuItem.Checked && DateTime.Now.ToString("HH:mm:ss:f") == startTime.ToString("HH:mm:ss:f")) ||
+                    (!useExactMsTimingsToolStripMenuItem.Checked && DateTime.Now.ToString("HH:mm:ss") == startTime.ToString("HH:mm:ss")))
                 {
                     if (!Path.IsPathFullyQualified(file))
                     {
@@ -78,13 +78,13 @@ namespace AppScheduler
                 if (!DateTime.TryParse(endTimes.Lines[Array.IndexOf(files.Lines, file)], out DateTime endTime))
                     continue;
 
-                if ((useExactMS.Checked && DateTime.Now >= endTime) ||
-                    (!useExactMS.Checked && DateTime.Now >= endTime))
+                if ((useExactMsTimingsToolStripMenuItem.Checked && DateTime.Now >= endTime) ||
+                    (!useExactMsTimingsToolStripMenuItem.Checked && DateTime.Now >= endTime))
                 {
                     if (Processes.TryGetValue(file + i, out Process proc))
                         KillAllProcessesSpawnedBy(proc.Id);
 
-                    if (checkBox1.Checked)
+                    if (nuclearModeToolStripMenuItem.Checked)
                         KillAllProcessesSpawnedBy(Process.GetCurrentProcess().Id);
                 }
             }
@@ -114,23 +114,9 @@ namespace AppScheduler
             }
         }
 
-        private void pauseResume_Click(object sender, EventArgs e)
-        {
-            if (scheduler.Enabled)
-            {
-                scheduler.Stop();
-                pauseResume.Text = "Resume";
-            }
-            else
-            {
-                scheduler.Start();
-                pauseResume.Text = "Pause";
-            }
-        }
-
         private void useExactMS_CheckedChanged(object sender, EventArgs e)
         {
-            if (useExactMS.Checked)
+            if (useExactMsTimingsToolStripMenuItem.Checked)
             {
                 scheduler.Interval = 90;
             }
@@ -144,30 +130,37 @@ namespace AppScheduler
         {
             for (int i = 0; i < files.Lines.Length; i++)
             {
-                string file = this.files.Lines[i];
-
-                if (string.IsNullOrEmpty(file))
-                    continue;
-
-                Process nproc = new Process
+                try
                 {
-                    StartInfo = { UseShellExecute = true, FileName = file }
-                };
+                    string file = this.files.Lines[i];
 
-                nproc.Start();
-                string path = nproc.MainModule.FileName;
-                nproc.Kill();
+                    if (string.IsNullOrEmpty(file))
+                        continue;
 
-                string[] files = this.files.Lines;
-                string[] args = cmdArgs.Lines;
+                    Process nproc = new Process
+                    {
+                        StartInfo = { UseShellExecute = true, FileName = file }
+                    };
 
-                files[i] = path;
-                if (args[i].Length > 0)
-                    args[i] += " ";
-                args[i] += $"\"{file}\"";
+                    nproc.Start();
+                    string path = nproc.MainModule.FileName;
+                    nproc.Kill();
 
-                this.files.Lines = files;
-                cmdArgs.Lines = args;
+                    string[] files = this.files.Lines;
+                    string[] args = cmdArgs.Lines;
+
+                    files[i] = path;
+                    if (args[i].Length > 0)
+                        args[i] += " ";
+                    args[i] += $"\"{file}\"";
+
+                    this.files.Lines = files;
+                    cmdArgs.Lines = args;
+                }
+                catch
+                {
+
+                }
             }
         }
 
@@ -241,12 +234,19 @@ namespace AppScheduler
 
         private void createManifestToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            File.WriteAllText(Application.StartupPath + "\\manifest", string.Empty);
+            if (createManifestToolStripMenuItem.Checked)
+            {
+                File.WriteAllText(Application.StartupPath + "\\autoload_manifest", string.Empty);
+            }
+            else
+            {
+                File.Delete(Application.StartupPath + "\\autoload_manifest");
+            }
         }
 
         private void AppScheduler_Load(object sender, EventArgs e)
         {
-            if (!File.Exists(Application.StartupPath + "\\manifest"))
+            if (!File.Exists(Application.StartupPath + "\\autoload_manifest"))
                 return;
 
             if (File.Exists(Application.StartupPath + "\\files.txt"))
@@ -268,6 +268,18 @@ namespace AppScheduler
                 cmdArgs.Text = File.ReadAllText(Application.StartupPath + "\\cmdArgs.txt");
             else
                 MessageBox.Show("Manifest exists but cmdArgs save does not.");
+        }
+
+        private void pauseSchedulingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!pauseSchedulingToolStripMenuItem.Checked)
+            {
+                scheduler.Stop();
+            }
+            else
+            {
+                scheduler.Start();
+            }
         }
     }
 }
