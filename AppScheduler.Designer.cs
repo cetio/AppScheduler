@@ -54,15 +54,15 @@
             schedulingToolStripMenuItem = new ToolStripMenuItem();
             useExactMsTimingsToolStripMenuItem = new ToolStripMenuItem();
             pauseSchedulingToolStripMenuItem = new ToolStripMenuItem();
-            nuclearModeToolStripMenuItem = new ToolStripMenuItem();
             fullscreenProcessToolStripMenuItem = new ToolStripMenuItem();
             minimizeProcessToolStripMenuItem = new ToolStripMenuItem();
             runAsAdministratorToolStripMenuItem = new ToolStripMenuItem();
-            toolStripTextBox1 = new ToolStripTextBox();
-            filesLabel = new Label();
+            nuclearModeToolStripMenuItem = new ToolStripMenuItem();
             killModeTaskToolStripMenuItem = new ToolStripMenuItem();
             killModeWaitToolStripMenuItem = new ToolStripMenuItem();
             killModeTrackToolStripMenuItem = new ToolStripMenuItem();
+            toolStripTextBox1 = new ToolStripTextBox();
+            filesLabel = new Label();
             menuStrip.SuspendLayout();
             SuspendLayout();
             // 
@@ -158,6 +158,10 @@
             parseFilesAssociation.UseVisualStyleBackColor = true;
             parseFilesAssociation.Click += parseFilesAssociation_Click;
             // 
+            // saveDialog
+            // 
+            saveDialog.DefaultExt = "xml";
+            // 
             // menuStrip
             // 
             menuStrip.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, schedulingToolStripMenuItem, toolStripTextBox1 });
@@ -191,11 +195,9 @@
             // 
             // createManifestToolStripMenuItem
             // 
-            createManifestToolStripMenuItem.Checked = true;
             createManifestToolStripMenuItem.CheckOnClick = true;
-            createManifestToolStripMenuItem.CheckState = CheckState.Checked;
             createManifestToolStripMenuItem.Name = "createManifestToolStripMenuItem";
-            createManifestToolStripMenuItem.Size = new Size(170, 22);
+            createManifestToolStripMenuItem.Size = new Size(180, 22);
             createManifestToolStripMenuItem.Text = "Auto Load Default";
             createManifestToolStripMenuItem.Click += createManifestToolStripMenuItem_Click;
             // 
@@ -249,14 +251,6 @@
             pauseSchedulingToolStripMenuItem.Text = "Pause Scheduling";
             pauseSchedulingToolStripMenuItem.Click += pauseSchedulingToolStripMenuItem_Click;
             // 
-            // nuclearModeToolStripMenuItem
-            // 
-            nuclearModeToolStripMenuItem.CheckOnClick = true;
-            nuclearModeToolStripMenuItem.Name = "nuclearModeToolStripMenuItem";
-            nuclearModeToolStripMenuItem.Size = new Size(188, 22);
-            nuclearModeToolStripMenuItem.Text = "Kill Mode (Children)";
-            nuclearModeToolStripMenuItem.ToolTipText = "kill all children 😧";
-            // 
             // fullscreenProcessToolStripMenuItem
             // 
             fullscreenProcessToolStripMenuItem.CheckOnClick = true;
@@ -278,6 +272,37 @@
             runAsAdministratorToolStripMenuItem.Size = new Size(188, 22);
             runAsAdministratorToolStripMenuItem.Text = "Run As Administrator";
             // 
+            // nuclearModeToolStripMenuItem
+            // 
+            nuclearModeToolStripMenuItem.CheckOnClick = true;
+            nuclearModeToolStripMenuItem.Name = "nuclearModeToolStripMenuItem";
+            nuclearModeToolStripMenuItem.Size = new Size(188, 22);
+            nuclearModeToolStripMenuItem.Text = "Kill Mode (Children)";
+            nuclearModeToolStripMenuItem.ToolTipText = "kill all children 😧";
+            // 
+            // killModeTaskToolStripMenuItem
+            // 
+            killModeTaskToolStripMenuItem.CheckOnClick = true;
+            killModeTaskToolStripMenuItem.Name = "killModeTaskToolStripMenuItem";
+            killModeTaskToolStripMenuItem.Size = new Size(188, 22);
+            killModeTaskToolStripMenuItem.Text = "Kill Mode (Task)";
+            // 
+            // killModeWaitToolStripMenuItem
+            // 
+            killModeWaitToolStripMenuItem.CheckOnClick = true;
+            killModeWaitToolStripMenuItem.Name = "killModeWaitToolStripMenuItem";
+            killModeWaitToolStripMenuItem.Size = new Size(188, 22);
+            killModeWaitToolStripMenuItem.Text = "Kill Mode (Wait)";
+            // 
+            // killModeTrackToolStripMenuItem
+            // 
+            killModeTrackToolStripMenuItem.Checked = true;
+            killModeTrackToolStripMenuItem.CheckOnClick = true;
+            killModeTrackToolStripMenuItem.CheckState = CheckState.Checked;
+            killModeTrackToolStripMenuItem.Name = "killModeTrackToolStripMenuItem";
+            killModeTrackToolStripMenuItem.Size = new Size(188, 22);
+            killModeTrackToolStripMenuItem.Text = "Kill Mode (Track)";
+            // 
             // toolStripTextBox1
             // 
             toolStripTextBox1.Name = "toolStripTextBox1";
@@ -295,33 +320,11 @@
             filesLabel.TabIndex = 17;
             filesLabel.Text = "Files";
             // 
-            // killModeTaskToolStripMenuItem
-            // 
-            killModeTaskToolStripMenuItem.CheckOnClick = true;
-            killModeTaskToolStripMenuItem.Name = "killModeTaskToolStripMenuItem";
-            killModeTaskToolStripMenuItem.Size = new Size(188, 22);
-            killModeTaskToolStripMenuItem.Text = "Kill Mode (Task)";
-            // 
-            // killModeWaitToolStripMenuItem
-            // 
-            killModeWaitToolStripMenuItem.Checked = true;
-            killModeWaitToolStripMenuItem.CheckOnClick = true;
-            killModeWaitToolStripMenuItem.CheckState = CheckState.Checked;
-            killModeWaitToolStripMenuItem.Name = "killModeWaitToolStripMenuItem";
-            killModeWaitToolStripMenuItem.Size = new Size(188, 22);
-            killModeWaitToolStripMenuItem.Text = "Kill Mode (Wait)";
-            // 
-            // killModeTrackToolStripMenuItem
-            // 
-            killModeTrackToolStripMenuItem.Name = "killModeTrackToolStripMenuItem";
-            killModeTrackToolStripMenuItem.Size = new Size(188, 22);
-            killModeTrackToolStripMenuItem.Text = "Kill Mode (Track)";
-            // 
             // AppScheduler
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(873, 415);
+            ClientSize = new Size(873, 418);
             Controls.Add(filesLabel);
             Controls.Add(startTimeLabel);
             Controls.Add(parseFilesAssociation);

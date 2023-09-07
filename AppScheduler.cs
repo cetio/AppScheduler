@@ -41,13 +41,13 @@ namespace AppScheduler
 
                 if (string.IsNullOrEmpty(file))
                     continue;
-
-                if (startTimes.Lines.Length <= Array.IndexOf(files.Lines, file))
+                
+                if (startTimes.Lines.Length <= i)
                     continue;
-
-                if (!DateTime.TryParse(startTimes.Lines[Array.IndexOf(files.Lines, file)], out DateTime startTime))
+                
+                if (!DateTime.TryParse(startTimes.Lines[i], out DateTime startTime))
                     continue;
-
+                
                 if ((useExactMsTimingsToolStripMenuItem.Checked && DateTime.Now.ToString("HH:mm:ss:f") == startTime.ToString("HH:mm:ss:f")) ||
                     (!useExactMsTimingsToolStripMenuItem.Checked && DateTime.Now.ToString("HH:mm:ss") == startTime.ToString("HH:mm:ss")))
                 {
@@ -56,7 +56,7 @@ namespace AppScheduler
                         MessageBox.Show($"File path {file} is not valid.");
                         continue;
                     }
-
+                    
                     if (Processes.TryGetValue(file + i, out Process proc))
                     {
                         proc.Start();
@@ -93,29 +93,35 @@ namespace AppScheduler
                     continue;
                 }
 
-                if (endTimes.Lines.Length <= Array.IndexOf(files.Lines, file))
+                if (endTimes.Lines.Length <= i)
                     continue;
 
-                if (!DateTime.TryParse(endTimes.Lines[Array.IndexOf(files.Lines, file)], out DateTime endTime))
+                if (!DateTime.TryParse(endTimes.Lines[i], out DateTime endTime))
                     continue;
 
-                if ((useExactMsTimingsToolStripMenuItem.Checked && DateTime.Now >= endTime) ||
-                    (!useExactMsTimingsToolStripMenuItem.Checked && DateTime.Now >= endTime))
+                if (DateTime.Now.ToString("HH:mm:ss") == endTime.ToString("HH:mm:ss"))
                 {
-                    if (killModeTrackToolStripMenuItem.Checked && Processes.TryGetValue(file + i, out Process proc))
-                        KillAllProcessesSpawnedBy(proc, true);
-
-                    if (nuclearModeToolStripMenuItem.Checked)
-                        KillAllProcessesSpawnedBy(Process.GetCurrentProcess(), false);
-
-                    if (killModeTaskToolStripMenuItem.Checked && Processes.TryGetValue(file + i, out Process nproc))
+                    try
                     {
-                        foreach (Process iproc in Process.GetProcessesByName(nproc.ProcessName))
-                            KillAllProcessesSpawnedBy(iproc, true);
-                    }
+                        if (killModeTrackToolStripMenuItem.Checked && Processes.TryGetValue(file + i, out Process proc))
+                            KillAllProcessesSpawnedBy(proc, true);
 
-                    if (killModeWaitToolStripMenuItem.Checked && Processes.TryGetValue(file + i, out Process dproc))
-                        dproc.WaitForExit();
+                        if (nuclearModeToolStripMenuItem.Checked)
+                            KillAllProcessesSpawnedBy(Process.GetCurrentProcess(), false);
+
+                        if (killModeTaskToolStripMenuItem.Checked && Processes.TryGetValue(file + i, out Process nproc))
+                        {
+                            foreach (Process iproc in Process.GetProcessesByName(nproc.ProcessName))
+                                KillAllProcessesSpawnedBy(iproc, true);
+                        }
+
+                        if (killModeWaitToolStripMenuItem.Checked && Processes.TryGetValue(file + i, out Process dproc))
+                            dproc.WaitForExit();
+                    }
+                    catch
+                    {
+
+                    }
                 }
             }
         }
@@ -237,42 +243,19 @@ namespace AppScheduler
 
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            saveDialog.FileName = "files.txt";
             saveDialog.ShowDialog();
-            File.WriteAllText(saveDialog.FileName, files.Text);
-
-            saveDialog.FileName = "startTimes.txt";
-            saveDialog.ShowDialog();
-            File.WriteAllText(saveDialog.FileName, startTimes.Text);
-
-            saveDialog.FileName = "endTimes.txt";
-            saveDialog.ShowDialog();
-            File.WriteAllText(saveDialog.FileName, endTimes.Text);
-
-            saveDialog.FileName = "cmdArgs.txt";
-            saveDialog.ShowDialog();
-            File.WriteAllText(saveDialog.FileName, cmdArgs.Text);
+            FormSerialisation.FormSerialisor.Serialise(this, saveDialog.FileName);
         }
 
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
             fileDialog.ShowDialog();
-
-            if (fileDialog.FileNames.Length != 4)
-                throw new ArgumentException("All 4 save files must be loaded at once.");
-
-            files.Text = File.ReadAllText(fileDialog.FileNames[0]);
-            startTimes.Text = File.ReadAllText(fileDialog.FileNames[1]);
-            endTimes.Text = File.ReadAllText(fileDialog.FileNames[2]);
-            cmdArgs.Text = File.ReadAllText(fileDialog.FileNames[3]);
+            FormSerialisation.FormSerialisor.Deserialise(this, fileDialog.FileName);
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            File.WriteAllText(Application.StartupPath + "\\files.txt", files.Text);
-            File.WriteAllText(Application.StartupPath + "\\startTimes.txt", startTimes.Text);
-            File.WriteAllText(Application.StartupPath + "\\endTimes.txt", endTimes.Text);
-            File.WriteAllText(Application.StartupPath + "\\cmdArgs.txt", cmdArgs.Text);
+            FormSerialisation.FormSerialisor.Serialise(this, Application.StartupPath + "\\save.xml");
         }
 
         private void createManifestToolStripMenuItem_Click(object sender, EventArgs e)
@@ -292,25 +275,15 @@ namespace AppScheduler
             if (!File.Exists(Application.StartupPath + "\\autoload_manifest"))
                 return;
 
-            if (File.Exists(Application.StartupPath + "\\files.txt"))
-                files.Text = File.ReadAllText(Application.StartupPath + "\\files.txt");
-            else
-                MessageBox.Show("Manifest exists but files save does not.");
+            createManifestToolStripMenuItem.Checked = true;
 
-            if (File.Exists(Application.StartupPath + "\\startTimes.txt"))
-                startTimes.Text = File.ReadAllText(Application.StartupPath + "\\startTimes.txt");
-            else
-                MessageBox.Show("Manifest exists but startTimes save does not.");
+            if (Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true).GetValue("AppScheduler") != null)
+                runAtStartupToolStripMenuItem.Checked = true;
 
-            if (File.Exists(Application.StartupPath + "\\endTimes.txt"))
-                endTimes.Text = File.ReadAllText(Application.StartupPath + "\\endTimes.txt");
+            if (File.Exists(Application.StartupPath + "\\save.xml"))
+                FormSerialisation.FormSerialisor.Deserialise(this, Application.StartupPath + "\\save.xml");
             else
-                MessageBox.Show("Manifest exists but endTimes save does not.");
-
-            if (File.Exists(Application.StartupPath + "\\cmdArgs.txt"))
-                cmdArgs.Text = File.ReadAllText(Application.StartupPath + "\\cmdArgs.txt");
-            else
-                MessageBox.Show("Manifest exists but cmdArgs save does not.");
+                MessageBox.Show("Manifest exists but save does not.");
         }
 
         private void pauseSchedulingToolStripMenuItem_Click(object sender, EventArgs e)
